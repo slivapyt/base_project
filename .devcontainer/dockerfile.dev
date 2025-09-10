@@ -47,5 +47,5 @@ RUN mkdir -p /root/.config && \
     echo 'disabled = true' >> /root/.config/starship.toml
 
 RUN git config --global user.name "Roman" && \
-    git config --global user.email "lackroy5111@gmail.com" \
+    git config --global user.email "lackroy5111@gmail.com" && \
     git config --global credential.helper store
