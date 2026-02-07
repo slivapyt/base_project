@@ -1,4 +1,4 @@
-FROM python:3.13.6-slim-trixie
+FROM python:3.14.3-trixie
 
 USER root
 
@@ -13,9 +13,14 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
 WORKDIR /<my_project_name>
 
-COPY ../requirements/ ./requirements/
-RUN pip install --no-cache-dir --upgrade pip
-RUN pip install --no-cache-dir -r ./requirements/dev.txt
+RUN curl -LsSf https://astral.sh/uv/install.sh | sh
+ENV UV_LINK_MODE=copy
+ENV PATH="/root/.local/bin:${PATH}"
+COPY ../pyproject.toml ./pyproject.toml
+COPY ../uv.lock ./uv.lock
+RUN uv lock --upgrade-package ruff
+RUN uv lock --upgrade-package ty
+RUN uv sync
 
 RUN mkdir -p /root/.ssh
 COPY .ssh/ /root/.ssh/
