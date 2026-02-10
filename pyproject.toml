@@ -19,8 +19,9 @@ target-version = "py314"
 exclude = []
 
 [tool.ruff.lint]
+preview = true
 select = ["E", "F", "B", "COM", "N", "Q", "LOG", "G", "RET", "I", "ANN"]
-ignore = ["E203"]
+ignore = ["E203", "I001"]
 
 [tool.ruff.format]
 quote-style = "double"
