@@ -16,7 +16,9 @@ dev = [
 line-length = 88
 indent-width = 4
 target-version = "py314"
-exclude = []
+exclude = [
+    ".venv"
+]
 
 [tool.ruff.lint]
 preview = true
@@ -36,9 +38,11 @@ include_trailing_comma = true
 use_parentheses = true
 line_length = 88
 skip = [
-    "migrations",
+    ".venv"
 ]
 
 
 [tool.ty.src]
-exclude = []
+exclude = [
+    ".venv"
+]
