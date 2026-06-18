@@ -26,7 +26,6 @@
 				"littlefoxteam.vscode-python-test-adapter",
 				"njqdev.vscode-python-typehint",
 				"mechatroner.rainbow-csv",
-				"RooVeterinaryInc.roo-cline",
 				"streetsidesoftware.code-spell-checker-russian",
 				"syler.sass-indented",
 				"mtxr.sqltools",
@@ -35,7 +34,8 @@
 				"mtxr.sqltools-driver-sqlite",
 				"ms-vscode.test-adapter-converter",
 				"hbenl.vscode-test-explorer",
-				"redhat.vscode-yaml"
+				"redhat.vscode-yaml",
+				"sst-dev.opencode"
 			]
 		}
 	}

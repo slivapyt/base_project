@@ -1,26 +1,38 @@
-FROM python:3.14.3-trixie
+FROM python:3.14-slim-trixie
 
 USER root
+
+ENV LANG=C.UTF-8 \
+    LC_ALL=C.UTF-8
+
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
     git \
     curl \
     zsh \
     nodejs \
-    openssh-client \ 
-    && apt-get clean \
-    && rm -rf /var/lib/apt/lists/*
+    openssh-client
+
+RUN curl -fsSL https://opencode.ai/install | bash
+RUN echo 'export PATH=/root/.opencode/bin:$PATH' >> /root/.zshrc
+
+RUN curl -sS https://starship.rs/install.sh | sh -s -- -y
+RUN echo 'eval "$(starship init bash)"' >> /root/.bashrc
+RUN echo 'eval "$(starship init zsh)"' >> /root/.zshrc
+COPY .devcontainer/starship.toml /root/.config/starship.toml
+
+
+RUN git config --global user.name "" && \
+    git config --global user.email "" && \
+    git config --global init.defaultBranch main && \
+    git config --global credential.helper store
+
 
 WORKDIR /<my_project_name>
+ENV PYTHONPATH="/<my_project_name>"
 
-RUN curl -LsSf https://astral.sh/uv/install.sh | sh
-ENV UV_LINK_MODE=copy
-ENV PATH="/root/.local/bin:${PATH}"
-COPY ../pyproject.toml ./pyproject.toml
-COPY ../uv.lock ./uv.lock
-RUN uv lock --upgrade-package ruff
-RUN uv lock --upgrade-package ty
-RUN uv sync
+
+COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
 
 RUN mkdir -p /root/.ssh
 COPY .ssh/ /root/.ssh/
@@ -28,31 +40,3 @@ RUN chmod 700 /root/.ssh
 RUN chmod 600 /root/.ssh/*
 
 COPY .. .
-
-ENV PYTHONPATH="/<my_project_name>"
-ENV PYTHONDONTWRITEBYTECODE=1 \
-    PYTHONUNBUFFERED=1
-ENV VIRTUAL_ENV="/<my_project_name>/.venv"
-ENV PATH="$VIRTUAL_ENV/bin:$PATH"
-
-ENV LANG=C.UTF-8 \
-    LC_ALL=C.UTF-8
-
-
-RUN curl -sS https://starship.rs/install.sh | sh -s -- --yes --bin-dir /usr/local/bin
-
-RUN sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
-RUN echo 'eval "$(starship init zsh)"' >> /root/.zshrc
-
-RUN mkdir -p /root/.config && \
-    echo '[character]' >> /root/.config/starship.toml && \
-    echo 'success_symbol = "[➜](bold green)"' >> /root/.config/starship.toml && \
-    echo 'error_symbol = "[✖︎](bold red)"' >> /root/.config/starship.toml && \
-    echo '[nodejs]' >> /root/.config/starship.toml && \
-    echo 'disabled = true' >> /root/.config/starship.toml && \
-    echo '[python]' >> /root/.config/starship.toml && \
-    echo 'disabled = true' >> /root/.config/starship.toml
-
-RUN git config --global user.name "Roman" && \
-    git config --global user.email "lackroy5111@gmail.com" && \
-    git config --global credential.helper store
